@@ -5,9 +5,11 @@ import com.example.UserService.Repository.UserRepository;
 import com.example.UserService.Service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.FormattingTuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -45,6 +47,33 @@ public class UserSeviceImpl implements UserService {
 	}
 
 	@Override
+	public User getUserById(Long id) {
+		try {
+			Optional<User> getuser = userRepository.findById(id);
+			if (getuser.isPresent()) {
+				User user = getuser.get();
+				return user;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			logger.error(e.toString());
+		}
+		return null;
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		try {
+			List<User> userlist = userRepository.findAll();
+			return userlist;
+		} catch (Exception e) {
+			logger.error(e.toString());
+		}
+		return null;
+	}
+
+	@Override
 	public String deleteUser(Long id) {
 		logger.info("finding the id of the User for getUserById");
 		Optional<User> userOptional = userRepository.findById(id);
@@ -57,4 +86,5 @@ public class UserSeviceImpl implements UserService {
 			return "user deleted sucessfully";
 		}
 	}
+
 }
