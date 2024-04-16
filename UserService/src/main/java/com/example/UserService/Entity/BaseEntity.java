@@ -1,6 +1,5 @@
 package com.example.UserService.Entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
@@ -16,8 +15,8 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date creationDate;
 
 }
