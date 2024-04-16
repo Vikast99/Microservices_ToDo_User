@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.Date;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +15,8 @@ import java.time.LocalDate;
 @Setter
 @Table(name = "users")
 @Entity
-@NamedQueries({@NamedQuery(name = "User.findBycreationDate",
-		query = "select * from users where creation_date between '2024-4-15' and '2024-4-16' ")})
+/*@NamedQueries({@NamedQuery(name = "User.findBycreationDate",
+		query = "select * from users where creation_date between '2024-4-15' and '2024-4-16' ")})*/
 public class User extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,11 @@ public class User extends BaseEntity {
 	private String name;
 	private String email;
 
-	public LocalDate getCreationDate() {
-		return null;
+	@Setter
+	private Date creationDate;
+
+	public boolean isCreationDateWithinRange(Date startDate, Date endDate) {
+		return !creationDate.before(startDate) && !creationDate.after(endDate);
+
 	}
 }
