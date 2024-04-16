@@ -31,6 +31,8 @@ public class UserSeviceImpl implements UserService {
 						return "User already exist";
 					} else {
 						userRepository.save(user);
+						logger.info("User saved successfully");
+						return "User saved successfully";
 					}
 				} else {
 					logger.warn("User can not be  null");

@@ -3,13 +3,14 @@ package com.example.UserService.Controller;
 import com.example.UserService.Entity.User;
 import com.example.UserService.Repository.UserRepository;
 import com.example.UserService.Service.UserService;
-import com.example.UserService.ServiceImpl.UserSeviceImpl;
+
+
+import java.sql.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.UserService.Entity.User;
-import com.example.UserService.Service.UserService;
-
-import java.time.LocalDate;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,20 +33,20 @@ public class UserController {
 @Autowired
 private UserRepository userRepository;
 	@PostMapping("/createUser")
-	public ResponseEntity<String> createUser(@RequestBody User user) {
-//		String existEmployee = null;
-//		if (user != null) {
-//			try {
-//				logger.info("Creating User: {}", user.getName());
-//				existEmployee = userService.createUser(user);
-//			} catch (Exception e) {
-//				logger.error(e.toString());
-//			}
-//		} else {
-//			logger.info("User is null");
-//		}
-//		return existEmployee;
-		try {
+	public String createUser(@RequestBody User user) {
+		String existEmployee = null;
+		if (user != null) {
+			try {
+				logger.info("Creating User: {}", user.getName());
+				existEmployee = userService.createUser(user);
+			} catch (Exception e) {
+				logger.error(e.toString());
+			}
+		} else {
+			logger.info("User is null");
+		}
+		return existEmployee;
+	/*	try {
 			if (user != null) {
 				logger.info("Creating User: {}", user.getName());
 				userService.createUser(user);
@@ -61,7 +57,7 @@ private UserRepository userRepository;
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
-		return null;
+		return null;*/
 	}
 
 	@GetMapping("/getUsersById")
@@ -96,21 +92,19 @@ private UserRepository userRepository;
 	}
 
 
-	@GetMapping
+	@GetMapping("/getUserByDate")
 	public List<User> getUsersBetweenDates(
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+			@RequestParam Date startDate,
+			@RequestParam Date endDate) {
 
 		// Retrieve all users from the database
 		List<User> allUsers = userRepository.findAll();
 
 		// Filter users based on creationDate falling within the specified date range
 		return allUsers.stream()
-				.filter(user -> isWithinDateRange(user.getCreationDate(), startDate, endDate))
+				.filter(user -> user.isCreationDateWithinRange( startDate,  endDate))
 				.collect(Collectors.toList());
 	}
 
-	private boolean isWithinDateRange(LocalDate creationDate, LocalDate startDate, LocalDate endDate) {
-		return !creationDate.isBefore(startDate) && !creationDate.isAfter(endDate);
-	}
+
 }
