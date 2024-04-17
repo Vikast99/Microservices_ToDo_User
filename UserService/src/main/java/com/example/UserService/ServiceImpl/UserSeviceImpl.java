@@ -5,7 +5,6 @@ import com.example.UserService.Repository.UserRepository;
 import com.example.UserService.Service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.FormattingTuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,19 +48,21 @@ public class UserSeviceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserById(Long id) {
+	public Object getUserById(Long id) {
 		try {
-			Optional<User> getuser = userRepository.findById(id);
-			if (getuser.isPresent()) {
-				User user = getuser.get();
+			Optional<User> getUser = userRepository.findById(id);
+			if (getUser.isPresent()) {
+				User user = getUser.get();
+				logger.info("succesfully get the user");
 				return user;
 			} else {
-				return null;
+				logger.warn("invaliad user id");
+				return "invaliad user id";
 			}
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
-		return null;
+		return "something went wrong";
 	}
 
 	@Override
