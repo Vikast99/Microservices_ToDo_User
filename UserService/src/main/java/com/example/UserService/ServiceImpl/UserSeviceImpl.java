@@ -1,16 +1,20 @@
 package com.example.UserService.ServiceImpl;
 
-import com.example.UserService.Entity.User;
-import com.example.UserService.Repository.UserRepository;
-import com.example.UserService.Service.UserService;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import com.example.UserService.Entity.User;
+import com.example.UserService.Repository.UserRepository;
+import com.example.UserService.Service.UserService;
 
 @Service
 public class UserSeviceImpl implements UserService {
@@ -88,6 +92,42 @@ public class UserSeviceImpl implements UserService {
 			logger.info("Uesr with ID " + id + " deleted successfully.");
 			return "user deleted sucessfully";
 		}
+	}
+
+	@Override
+	public User updateUser(Long id, User updateUser) throws Exception {
+
+		if (id == null || updateUser == null) {
+			throw new IllegalArgumentException("User id and updated user cannot be null");
+		}
+
+		User user = userRepository.findById(id).orElse(null);
+		if (user == null) {
+			throw new IllegalArgumentException("User not found with id: " + id);
+		}
+
+		if (updateUser.getName() != null && !updateUser.getName().isEmpty()) {
+			user.setName(updateUser.getName());
+		}
+		if (updateUser.getEmail() != null && !updateUser.getEmail().isEmpty()) {
+			user.setEmail(updateUser.getEmail());
+		}
+
+		try {
+			userRepository.save(user);
+			return user;
+		} catch (Exception e) {
+			throw new RuntimeException("Error updating user: " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public List<User> getUsersBetweenDates(Date startDate, Date endDate) {
+		List<User> allUsers = userRepository.findAll();
+
+		return allUsers.stream().filter(user -> user.isCreationDateWithinRange(startDate, endDate))
+				.collect(Collectors.toList());
 	}
 
 }
