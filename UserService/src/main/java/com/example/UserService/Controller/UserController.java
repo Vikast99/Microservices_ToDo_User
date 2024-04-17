@@ -4,7 +4,6 @@ import com.example.UserService.Entity.User;
 import com.example.UserService.Repository.UserRepository;
 import com.example.UserService.Service.UserService;
 
-
 import java.sql.Date;
 import java.util.List;
 
@@ -30,8 +29,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-@Autowired
-private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
+
 	@PostMapping("/createUser")
 	public String createUser(@RequestBody User user) {
 		String existEmployee = null;
@@ -46,18 +46,14 @@ private UserRepository userRepository;
 			logger.info("User is null");
 		}
 		return existEmployee;
-	/*	try {
-			if (user != null) {
-				logger.info("Creating User: {}", user.getName());
-				userService.createUser(user);
-				return new ResponseEntity<String>("User Created Sucessfully!!!", HttpStatus.OK);
-			} else {
-				return new ResponseEntity<String>("User Not found!!!", HttpStatus.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			logger.error(e.toString());
-		}
-		return null;*/
+		/*
+		 * try { if (user != null) { logger.info("Creating User: {}", user.getName());
+		 * userService.createUser(user); return new
+		 * ResponseEntity<String>("User Created Sucessfully!!!", HttpStatus.OK); } else
+		 * { return new ResponseEntity<String>("User Not found!!!",
+		 * HttpStatus.NOT_FOUND); } } catch (Exception e) { logger.error(e.toString());
+		 * } return null;
+		 */
 	}
 
 	@GetMapping("/getUsersById")
@@ -92,20 +88,27 @@ private UserRepository userRepository;
 		return null;
 	}
 
-
 	@GetMapping("/getUserByDate")
-	public List<User> getUsersBetweenDates(
-			@RequestParam Date startDate,
-			@RequestParam Date endDate) {
-
-		// Retrieve all users from the database
-		List<User> allUsers = userRepository.findAll();
-
-		// Filter users based on creationDate falling within the specified date range
-		return allUsers.stream()
-				.filter(user -> user.isCreationDateWithinRange( startDate,  endDate))
-				.collect(Collectors.toList());
+	public List<User> getUsersBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate) {
+		if (startDate != null & endDate != null) {
+			logger.info("get users present between dates");
+			return userService.getUsersBetweenDates(startDate, endDate);
+		} else {
+			logger.info("start and end dates must not be null");
+			return null;
+		}
 	}
 
+	@PostMapping("/updateUser")
+	public User updateUser(@RequestParam Long id, @RequestBody User updateUser) throws Exception {
+		if (id != 0 && updateUser != null) {
+			logger.info("User updation called");
+			return userService.updateUser(id, updateUser);
+		} else {
+			logger.info("User must not be null or id not equal to zero");
+			return null;
+		}
+
+	}
 
 }
