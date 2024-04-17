@@ -61,12 +61,13 @@ private UserRepository userRepository;
 	}
 
 	@GetMapping("/getUsersById")
-	public User getUsers(@RequestParam Long id) {
+	public ResponseEntity<?> getUsers(@RequestParam Long id) {
 		if (id != 0) {
 			logger.info("get user by {}", id);
-			return userService.getUserById(id);
+			Object existEmployee = userService.getUserById(id);
+			return ResponseEntity.status(HttpStatus.CREATED).body(existEmployee);
 		} else {
-			return null;
+			return ResponseEntity.status(HttpStatus.CREATED).body("please enter the user id");
 		}
 	}
 
