@@ -44,8 +44,9 @@ public class TaskController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id){
-		log.info("get Task By Id");
+		log.info("get Task By Id ;{}",id );
 		Task task= taskService.getTaskById(id);
+		log.info("task :{}",task);
 		if(task!=null) {
 			return new ResponseEntity<Task>(task,HttpStatus.FOUND);
 		}
@@ -56,7 +57,7 @@ public class TaskController {
 	
 	@PostMapping
 	public ResponseEntity<Task> addTask(@RequestBody Task task){
-		log.info("adding new task");
+		log.info("adding new task : {}",task);
 		Task addedTask = taskService.addTask(task);
 		if(task!=null) {
 			return new ResponseEntity<Task>(addedTask,HttpStatus.CREATED);
@@ -68,7 +69,7 @@ public class TaskController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable Integer id){
-		log.info("updating the task");
+		log.info("updating the task :{}", task);
 		Task updatedTask=taskService.getTaskById(id);
 		if(updatedTask!=null) {
 			return new ResponseEntity<Task>(taskService.updateTask(updatedTask, id),HttpStatus.OK);
@@ -105,7 +106,7 @@ public class TaskController {
 	@GetMapping("/creationDate")
 	public ResponseEntity<List<Task>> getTaskByCreationDate(@RequestBody Task task){
 		List<Task> taskList = taskService.getTaskByCreationDate(task.getCreationDate());
-		log.info("taskList "+taskList);
+		log.info("taskList :{} ",taskList);
 		if(!taskList.isEmpty()) {
 			return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		}
@@ -118,7 +119,7 @@ public class TaskController {
 	@GetMapping("/completionDate")
 	public ResponseEntity<List<Task>> getTaskByCompletionDate(@RequestBody Task task){
 		List<Task> taskList = taskService.getTaskByCompletionDate(task.getCompletionDate());
-		log.info("taskList "+taskList);
+		log.info("taskList:{} ",taskList);
 		if(!taskList.isEmpty()) {
 			return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		}

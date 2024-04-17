@@ -25,13 +25,13 @@ public class TaskServiceImp implements TaskService{
 	
 		try {
 			List<Task> taskList=taskRepository.findAll();
-			log.info("list of tasks "+taskList);
+			log.info("list of tasks:{} ",taskList);
 			if(!taskList.isEmpty()) {
 				return taskList;
 			}
 			
 		}catch (Exception e) {
-			log.error("exception "+ e);
+			log.error("exception :{} ",e);
 		}
 		
 			return null;
@@ -40,14 +40,14 @@ public class TaskServiceImp implements TaskService{
 
 	@Override
 	public Task getTaskById(Integer id) {
-		
+		log.info("Id : {}",id);
 		try {
 			Optional<Task> task=taskRepository.findById(id);
 			if(!task.isEmpty()) {
 				return task.get();
 			}
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception : {}",e);
 		}
 		
 		return null;
@@ -55,6 +55,7 @@ public class TaskServiceImp implements TaskService{
 
 	@Override
 	public Task addTask(Task task) {
+		log.info("task :{}",task);
 		try {
 			
 			Optional<Task> existingTask = taskRepository.findByTitle(task.getTitle().toLowerCase()); 
@@ -94,7 +95,7 @@ public class TaskServiceImp implements TaskService{
 			}
 			
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception :{} ",e);
 		}
 	
 		return null;
@@ -110,7 +111,7 @@ public class TaskServiceImp implements TaskService{
 				return true;
 			}
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception :{} ",e);
 		}
 		return false;
 		
@@ -127,7 +128,7 @@ public class TaskServiceImp implements TaskService{
 			}
 			
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception :{} ",e);
 		}
 		return null;
 	}
@@ -136,12 +137,12 @@ public class TaskServiceImp implements TaskService{
 	public List<Task> getTaskByCreationDate(LocalDate creationDate) {
 		try {
 			List<Task> task=taskRepository.findTaskByCreationDate(creationDate);
-			log.info("taskList "+task);
+			log.info("taskList :{}",task);
 			if(!task.isEmpty()){
 				return task;
 			}
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception : {}",e);
 		}
 		 
 		return null;
@@ -151,12 +152,12 @@ public class TaskServiceImp implements TaskService{
 	public List<Task> getTaskByCompletionDate(LocalDate completionDate) {
 		try {
 			List<Task> task=taskRepository.findTaskByCompletionDate(completionDate);
-			log.info("taskList "+task);
+			log.info("taskList:{} ",task);
 			if(!task.isEmpty()){
 				return task;
 			}
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception :{} ",e);
 		}
 		 
 		return null;
