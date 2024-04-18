@@ -60,13 +60,16 @@ public class TaskServiceImp implements TaskService{
 		log.info("task :{}",task);
 		try {
 			
-			Optional<Task> existingTask = taskRepository.findByTitle(task.getTitle().toLowerCase()); 
+			Optional<Task> existingTask = taskRepository.findTaskByTitleAndUserId(task.getTitle().toLowerCase(),task.getUserId()); 
 			log.info("existingTask :{}",existingTask);
 			if(existingTask.isEmpty()) {
+				Task newTask = new Task();
 				log.info("existingTask is not empty");
-				existingTask.get().setTitle(task.getTitle().toLowerCase());
-				existingTask.get().setUserId(task.getUserId());
-				return taskRepository.save(task);
+				newTask.setTitle(task.getTitle().toLowerCase());
+				newTask.setUserId(task.getUserId());
+				newTask.setDescription(task.getDescription());
+				newTask.setCompletionDate(task.getCompletionDate());
+				return taskRepository.save(newTask);
 			}
 			
 		} catch (Exception e) {
