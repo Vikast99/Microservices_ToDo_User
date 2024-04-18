@@ -25,6 +25,6 @@ public class Task {
 
 	private LocalDate completionDate;
 
-	private Integer userid;
+	private Integer userId;
 
 }
