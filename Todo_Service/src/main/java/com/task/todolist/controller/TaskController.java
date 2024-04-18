@@ -54,7 +54,7 @@ public class TaskController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Task> getTaskById(@RequestParam Integer id){
+	public ResponseEntity<Task> getTaskById(@PathVariable Integer id){
 		log.info("get Task By Id : {}",id );
 		Task task= taskService.getTaskById(id);
 		log.info("task :{}",task);
