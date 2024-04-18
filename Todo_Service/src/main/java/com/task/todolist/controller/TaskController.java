@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.task.todolist.entity.Task;
@@ -27,11 +28,21 @@ public class TaskController {
 	@Autowired
 	private TaskService taskService;
 	
+	
+	@GetMapping("/user/{userId}")
+	public List<Task> getTaskByUserId(@PathVariable Long userId){
+		if(userId != null) {
+			return taskService.getByUserId(userId);
+			
+		}
+		return null;
+	}
+	
 	@GetMapping
 	public ResponseEntity<List<Task>> findAllTask(){
 		log.info("fetching all tasks");
 		List<Task> taskList = taskService.getAllTask();
-		log.info("taskList "+taskList);
+		log.info("taskList :{} ",taskList);
 		if(!taskList.isEmpty()) {
 			return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		}
@@ -44,7 +55,7 @@ public class TaskController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Task> getTaskById(@PathVariable Integer id){
-		log.info("get Task By Id ;{}",id );
+		log.info("get Task By Id : {}",id );
 		Task task= taskService.getTaskById(id);
 		log.info("task :{}",task);
 		if(task!=null) {
@@ -67,22 +78,22 @@ public class TaskController {
 		}
 	}
 	
-	@PutMapping("/{id}")
+	@PostMapping("/update/{id}")
 	public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable Integer id){
 		log.info("updating the task :{}", task);
 		Task updatedTask=taskService.getTaskById(id);
 		if(updatedTask!=null) {
-			return new ResponseEntity<Task>(taskService.updateTask(updatedTask, id),HttpStatus.OK);
+			return new ResponseEntity<Task>(taskService.updateTask(task, id),HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<Task>(updatedTask,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Task>(task,HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	
-	@DeleteMapping("/{id}")
+	@PostMapping("/delete/{id}")
 	public ResponseEntity<String> deleteTaskById(@PathVariable Integer id){
-		log.info("deleting task by id ");
+		log.info("deleting task by id : {} ",id);
 		if(taskService.deleteTaskById(id)) {
 			return new ResponseEntity<String>("Task deleted successfully",HttpStatus.OK);
 		}
@@ -94,7 +105,7 @@ public class TaskController {
 	@GetMapping("/remainning")
 	public ResponseEntity<List<Task>> getRemainningTask(){
 		List<Task> taskList = taskService.getAllRemainningTask();
-		log.info("taskList "+taskList);
+		log.info("taskList :{}",taskList);
 		if(!taskList.isEmpty()) {
 			return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		}

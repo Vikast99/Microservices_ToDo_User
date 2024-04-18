@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -23,7 +25,9 @@ public class User extends BaseEntity {
 	private Long id;
 	private String name;
 	private String email;
-
+	@Transient
+	private List<Task> task;
+	
 	@Setter
 	private Date creationDate;
 

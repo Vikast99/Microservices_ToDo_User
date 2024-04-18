@@ -12,14 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.UserService.Entity.Task;
 import com.example.UserService.Entity.User;
 import com.example.UserService.Repository.UserRepository;
+import com.example.UserService.Service.TaskClient;
 import com.example.UserService.Service.UserService;
 
 @Service
 public class UserSeviceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private TaskClient taskClient;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserSeviceImpl.class);
 
@@ -57,6 +62,11 @@ public class UserSeviceImpl implements UserService {
 			Optional<User> getUser = userRepository.findById(id);
 			if (getUser.isPresent()) {
 				User user = getUser.get();
+				
+				//fetch task by userId
+				List<Task> taskList= taskClient.getTasksOfUser(user.getId());
+				//set list of fetched tasks to user
+				user.setTask(taskList);
 				logger.info("succesfully get the user");
 				return user;
 			} else {
@@ -73,7 +83,12 @@ public class UserSeviceImpl implements UserService {
 	public List<User> getAllUsers() {
 		try {
 			List<User> userlist = userRepository.findAll();
-			return userlist;
+
+			List<User> newUserList = userlist.stream().map(user -> {
+				user.setTask(taskClient.getTasksOfUser(user.getId()));
+				return user;
+			}).collect(Collectors.toList());
+			return newUserList;
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}

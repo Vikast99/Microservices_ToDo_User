@@ -27,11 +27,12 @@ public class TaskServiceImp implements TaskService{
 			List<Task> taskList=taskRepository.findAll();
 			log.info("list of tasks:{} ",taskList);
 			if(!taskList.isEmpty()) {
+				log.info("taskList is not empty");
 				return taskList;
 			}
 			
 		}catch (Exception e) {
-			log.error("exception :{} ",e);
+			log.error("exception in getAllTask :{} ",e);
 		}
 		
 			return null;
@@ -44,10 +45,11 @@ public class TaskServiceImp implements TaskService{
 		try {
 			Optional<Task> task=taskRepository.findById(id);
 			if(!task.isEmpty()) {
+				log.info("task is not empty");
 				return task.get();
 			}
 		} catch (Exception e) {
-			log.error("exception : {}",e);
+			log.error("exception in getTaskById : {}",e);
 		}
 		
 		return null;
@@ -59,16 +61,18 @@ public class TaskServiceImp implements TaskService{
 		try {
 			
 			Optional<Task> existingTask = taskRepository.findByTitle(task.getTitle().toLowerCase()); 
-			log.info("existingTask "+existingTask);
+			log.info("existingTask :{}",existingTask);
 			if(existingTask.isEmpty()) {
-				task.setTitle(task.getTitle());
+				log.info("existingTask is not empty");
+				existingTask.get().setTitle(task.getTitle().toLowerCase());
+				existingTask.get().setUserId(task.getUserId());
 				return taskRepository.save(task);
 			}
 			
 		} catch (Exception e) {
-			log.error("exception "+e);
+			log.error("exception in addTask : {}",e);
 		}
-		
+		log.info("task already exist");
 		return null;	
 		}
 		
@@ -76,28 +80,34 @@ public class TaskServiceImp implements TaskService{
 	@Override
 	public Task updateTask(Task newTask, Integer id) {
 		try {
+			
 			Optional<Task> task = taskRepository.findById(id);
-			log.info("task "+task);
+			log.info("update task :{}",task);
 
 			if(task.isPresent()) {
+				log.info(" task is not null :{}",task);
 				if(newTask.getTitle()!=null) {
-					task.get().setTitle(newTask.getTitle());
+					log.info(" title is not null :{}",newTask.getTitle());
+					task.get().setTitle(newTask.getTitle().toLowerCase());
 				}
 				if(newTask.getDescription()!=null) {
+					log.info(" description is not null :{}",newTask.getDescription());
 					task.get().setDescription(newTask.getDescription());
 				}
 				if(newTask.getCompletionDate()!=null) {
+					log.info(" completionDate is not null :{}",newTask.getCompletionDate());
 					task.get().setCompletionDate(newTask.getCompletionDate());
 				}
-					return taskRepository.save(task.get());
+				task.get().setUserId(newTask.getUserId());
+				
+				return taskRepository.save(task.get());
 					
-		
 			}
 			
 		} catch (Exception e) {
-			log.error("exception :{} ",e);
+			log.error("exception in update task :{} ",e);
 		}
-	
+		log.info("task not found with id : {}",id);
 		return null;
 	}
 
@@ -105,14 +115,17 @@ public class TaskServiceImp implements TaskService{
 	public boolean deleteTaskById(Integer id) {
 		
 		try {
+			log.info("id : {}",id);
 			Optional<Task> task=taskRepository.findById(id);
 			if(task.isPresent()) {
+				log.info("task is not empty ; {}",task);
 				taskRepository.deleteById(id);
 				return true;
 			}
 		} catch (Exception e) {
 			log.error("exception :{} ",e);
 		}
+		log.info("task not found with id : {}",id);
 		return false;
 		
 	}
@@ -124,12 +137,14 @@ public class TaskServiceImp implements TaskService{
 			List<Task> taskList = taskRepository.getAllRemainningTask(date);
 			log.info("taskList "+taskList);
 			if(!taskList.isEmpty()) {
+				log.info("taskList is not empty :{}",taskList);
 				return taskList;
 			}
 			
 		} catch (Exception e) {
-			log.error("exception :{} ",e);
+			log.error("exception in updateTask :{} ",e);
 		}
+		log.info("tasks not found");
 		return null;
 	}
 
@@ -142,9 +157,9 @@ public class TaskServiceImp implements TaskService{
 				return task;
 			}
 		} catch (Exception e) {
-			log.error("exception : {}",e);
+			log.error("exception in getTaskByCreationDate : {}",e);
 		}
-		 
+		log.info("task not found");
 		return null;
 	}
 
@@ -157,13 +172,22 @@ public class TaskServiceImp implements TaskService{
 				return task;
 			}
 		} catch (Exception e) {
-			log.error("exception :{} ",e);
+			log.error("exception in getTaskByCompletionDate:{} ",e);
 		}
-		 
+		log.info("task not found");
 		return null;
 	}
 
-
-	
-
+	@Override
+	public List<Task> getByUserId(Long userId) {
+		try {
+			List<Task> taskList = taskRepository.findByuserId(userId);
+			if(!taskList.isEmpty()) {
+				return taskList;
+			}
+		} catch (Exception e) {
+			log.error("exception "+e.toString());
+		}
+		return null;
+	}
 }

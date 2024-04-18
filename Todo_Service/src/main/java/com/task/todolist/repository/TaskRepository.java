@@ -24,7 +24,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     
     public List<Task> findTaskByCompletionDate(LocalDate completionDate) ;
 
-    
+    public List<Task> findByuserId(Long userId);
     
     
 }

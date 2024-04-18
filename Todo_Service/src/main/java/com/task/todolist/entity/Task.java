@@ -1,6 +1,5 @@
 package com.task.todolist.entity;
 
-
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -15,8 +14,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
 @Entity
-@Table(name="task")
+@Table(name = "task")
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -30,10 +30,12 @@ public class Task {
 	private String title;
 
 	private String description;
-	
+
 	@CreationTimestamp
 	private LocalDate creationDate;
-	
+
 	private LocalDate completionDate;
+
+	private Long userId;
 
 }
