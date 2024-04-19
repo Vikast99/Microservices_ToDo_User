@@ -25,6 +25,10 @@ public class Task {
 
 	private LocalDate completionDate;
 
-	private Integer userId;
+	private priorityEnum priority;
+
+	private Integer userid;
+
+
 
 }
