@@ -169,6 +169,7 @@ public class TaskServiceImp implements TaskService{
 	@Override
 	public List<Task> getTaskByCompletionDate(LocalDate completionDate) {
 		try {
+			
 			List<Task> task=taskRepository.findTaskByCompletionDate(completionDate);
 			log.info("taskList:{} ",task);
 			if(!task.isEmpty()){
@@ -192,5 +193,6 @@ public class TaskServiceImp implements TaskService{
 			log.error("exception "+e.toString());
 		}
 		return null;
-	}
+	}	
+
 }

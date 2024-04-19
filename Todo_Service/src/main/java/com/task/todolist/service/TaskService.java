@@ -29,4 +29,5 @@ public interface TaskService {
 	public List<Task> getTaskByCompletionDate(LocalDate completionDate);
 	
 	public List<Task> getByUserId(Long userId);
+
 }
