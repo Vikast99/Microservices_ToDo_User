@@ -38,6 +38,10 @@ public class UserSeviceImpl implements UserService {
 						logger.warn("User already exist");
 						return "User already exist";
 					} else {
+//						Task task= taskClient.addTask(user.getTask().get(0));
+//						List<Task> taskList = new ArrayList<Task>();
+//						taskList.add(task);
+//						user.setTask(taskList);
 						userRepository.save(user);
 						logger.info("User saved successfully");
 						return "User saved successfully";
