@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.task.todolist.entity.Task;
+import com.task.todolist.entity.priorityEnum;
 import com.task.todolist.service.TaskService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -138,8 +139,7 @@ public class TaskController {
 			return new ResponseEntity<List<Task>>(taskList,HttpStatus.NO_CONTENT);
 		}
 	}
-	
-	
+
 	
 
 }

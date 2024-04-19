@@ -62,10 +62,12 @@ public class UserSeviceImpl implements UserService {
 			Optional<User> getUser = userRepository.findById(id);
 			if (getUser.isPresent()) {
 				User user = getUser.get();
-				
-				//fetch task by userId
-				List<Task> taskList= taskClient.getTasksOfUser(user.getId());
-				//set list of fetched tasks to user
+
+				// fetch task by userId
+				List<Task> taskList = taskClient.getTasksOfUser(user.getId()).stream()
+						.sorted((task1, task2) -> task2.getPriority().compareTo(task1.getPriority()))
+						.collect(Collectors.toList());
+				// set list of fetched tasks to user
 				user.setTask(taskList);
 				logger.info("succesfully get the user");
 				return user;

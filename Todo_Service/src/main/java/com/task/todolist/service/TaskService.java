@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.task.todolist.entity.Task;
+import com.task.todolist.entity.priorityEnum;
 
 
 
@@ -29,4 +30,5 @@ public interface TaskService {
 	public List<Task> getTaskByCompletionDate(LocalDate completionDate);
 	
 	public List<Task> getByUserId(Long userId);
+
 }

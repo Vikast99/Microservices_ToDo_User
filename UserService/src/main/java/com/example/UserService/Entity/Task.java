@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class Task {
 	private LocalDate creationDate;
 
 	private LocalDate completionDate;
+
+	private priorityEnum priority;
 
 	private Integer userid;
 
