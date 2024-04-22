@@ -38,10 +38,7 @@ public class UserSeviceImpl implements UserService {
 						logger.warn("User already exist");
 						return "User already exist";
 					} else {
-//						Task task= taskClient.addTask(user.getTask().get(0));
-//						List<Task> taskList = new ArrayList<Task>();
-//						taskList.add(task);
-//						user.setTask(taskList);
+
 						userRepository.save(user);
 						logger.info("User saved successfully");
 						return "User saved successfully";
@@ -145,10 +142,15 @@ public class UserSeviceImpl implements UserService {
 
 	@Override
 	public List<User> getUsersBetweenDates(Date startDate, Date endDate) {
-		List<User> allUsers = userRepository.findAll();
-
-		return allUsers.stream().filter(user -> user.isCreationDateWithinRange(startDate, endDate))
-				.collect(Collectors.toList());
+		try {
+			List<User> userList=userRepository.findByCreationDateBetween(startDate, endDate).get();
+			if(!userList.isEmpty())
+				logger.info("user List is not empty");
+				return userList; 
+		} catch (Exception e) {
+			logger.error("exception :{}",e);
+		}
+		return null;
 	}
 
 }

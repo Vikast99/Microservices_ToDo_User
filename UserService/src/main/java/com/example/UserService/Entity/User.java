@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,22 +17,24 @@ import java.util.List;
 @Setter
 @Table(name = "users")
 @Entity
-/*@NamedQueries({@NamedQuery(name = "User.findBycreationDate",
-		query = "select * from users where creation_date between '2024-4-15' and '2024-4-16' ")})*/
-public class User extends BaseEntity {
+
+public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
+
+	@Column(name = "name")
 	private String name;
+
+	@Column(name = "email")
 	private String email;
+
 	@Transient
 	private List<Task> task;
-	
-	@Setter
+
+	@Column(name = "creation_date")
+	@CreationTimestamp
 	private Date creationDate;
 
-	public boolean isCreationDateWithinRange(Date startDate, Date endDate) {
-		return !creationDate.before(startDate) && !creationDate.after(endDate);
-
-	}
 }
