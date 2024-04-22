@@ -194,13 +194,8 @@ public class TaskServiceImp implements TaskService {
 			List<Task> task = taskRepository.findTaskByCompletionDate(completionDate);
 			log.info("taskList:{} ", task);
 			if (!task.isEmpty()) {
-
-				List<Task> task1 = taskRepository.findTaskByCompletionDate(completionDate);
-				log.info("taskList:{} ", task1);
-				if (!task1.isEmpty()) {
-
-					return task1;
-				}
+				log.info("task is not empty");
+				return task;
 			}
 		} catch (Exception e) {
 			log.error("exception in getTaskByCompletionDate:{} ", e);
