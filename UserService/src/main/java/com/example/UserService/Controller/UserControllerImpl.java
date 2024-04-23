@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.UserService.Entity.User;
 import com.example.UserService.Service.UserService;
@@ -25,6 +27,8 @@ public class UserControllerImpl implements UserController {
 
 	@Autowired
 	private UserService userService;
+	@Value("${project.image}")
+	private String path;
 	
 
 	List<User> getAllUserAndTasks(@PathVariable Long userId) {
@@ -113,5 +117,23 @@ public class UserControllerImpl implements UserController {
 
 	
 	
+	public ResponseEntity<User>fileUpload(@RequestParam("image") MultipartFile image) {
+		
+		String fileName=null;
+		try {
+			fileName=this.userService.uploadImage(path, image);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			// TODO: handle exception
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+		
+	}
+	
+	}
 
-}
+	
+	
+

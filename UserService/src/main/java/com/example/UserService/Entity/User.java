@@ -32,9 +32,15 @@ public class User {
 
 	@Transient
 	private List<Task> task;
+	
 
 	@Column(name = "creation_date")
 	@CreationTimestamp
 	private Date creationDate;
+	
+	@Column(name="fileName")
+	private String fileName;
+	
+	
 
 }

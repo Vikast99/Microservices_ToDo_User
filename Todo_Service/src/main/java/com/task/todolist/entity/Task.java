@@ -56,6 +56,18 @@ public class Task {
 	@Column(name = "status")
 	private Status status;
 	
+	
+	@Column(name = "todoType")
+	private TodoTypeEnum todoType;
+	
+	
+	@Column(name = "rating")
+	private  RatingsEnum rating;
+	
+	@ElementCollection
+	@CollectionTable(name = "tagList", joinColumns = @JoinColumn(name = "taskId"))
+	private List<String> tags;
+	
 	@ElementCollection
 	@CollectionTable(name = "CollectionHistory", joinColumns = @JoinColumn(name = "taskId"))
 	List<LocalDate> completionDateHistory = new ArrayList<LocalDate>();

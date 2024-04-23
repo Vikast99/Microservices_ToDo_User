@@ -3,6 +3,8 @@ package com.example.UserService.Service;
 import java.sql.Date;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.UserService.Entity.User;
 
 public interface UserService {
@@ -18,5 +20,7 @@ public interface UserService {
 	User updateUser(Long id, User updateUser) throws Exception;
 
 	List<User> getUsersBetweenDates(Date startDate, Date endDate);
+	
+	String uploadImage(String path,MultipartFile file); 
 
 }

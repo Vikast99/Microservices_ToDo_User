@@ -1,5 +1,8 @@
 package com.example.UserService.ServiceImpl;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.UserService.Entity.Task;
 import com.example.UserService.Entity.User;
@@ -153,4 +157,44 @@ public class UserSeviceImpl implements UserService {
 		return null;
 	}
 
-}
+	@Override
+	public String uploadImage(String path, MultipartFile file) {
+		// TODO Auto-generated method stub
+		
+				//File name
+				
+				String name=file.getOriginalFilename();
+				// File Path
+				
+				String filePath=path+File.separator+name;
+				
+				//create folder if not created
+				
+				File f=new File(path);
+				if(!f.exists())
+				{
+					f.mkdir();
+				}
+				
+				
+				//file copy
+				
+				
+				try {
+					
+					File files = new File("images/"+file.getOriginalFilename());
+					if(files.exists()) {
+						System.out.println("file already exist");
+					} else {
+						Files.copy(file.getInputStream(), Paths.get(filePath));
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return name;
+			}
+
+	}
+
+

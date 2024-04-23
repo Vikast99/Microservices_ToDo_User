@@ -1,9 +1,10 @@
 package com.example.UserService.Entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class Task {
 
 	private String description;
 
-	@CreationTimestamp
+
 	private LocalDate creationDate;
 
 	private LocalDate completionDate;
@@ -28,6 +29,23 @@ public class Task {
 	private priorityEnum priority;
 
 	private Integer userid;
+	
+	
+	private Status status;
+	
+	
+	private List<String> tags;
+	
+	
+	private TodoTypeEnum todoType;
+	
+	
+	
+	private  RatingsEnum rating;
+	
+	
+	List<LocalDate> completionDateHistory = new ArrayList<LocalDate>();
+	
 
 
 

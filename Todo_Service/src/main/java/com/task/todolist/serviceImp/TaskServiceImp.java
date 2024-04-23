@@ -92,6 +92,9 @@ public class TaskServiceImp implements TaskService {
 				newTask.setCompletionDate(task.getCompletionDate());
 				newTask.setPriority(task.getPriority());
 				newTask.setStatus(task.getStatus());
+				newTask.setRating(task.getRating());
+                newTask.setTodoType(task.getTodoType());
+                newTask.setTags(task.getTags());
 				return taskRepository.save(newTask);
 			}
 			}
@@ -194,9 +197,13 @@ public class TaskServiceImp implements TaskService {
 			List<Task> task = taskRepository.findTaskByCompletionDate(completionDate);
 			log.info("taskList:{} ", task);
 			if (!task.isEmpty()) {
-				log.info("task is not empty");
-				return task;
-			}
+				List<Task> task1 = taskRepository.findTaskByCompletionDate(completionDate);
+				log.info("taskList:{} ", task1);
+				if (!task1.isEmpty()) {
+
+					return task1;
+				}
+			} 
 		} catch (Exception e) {
 			log.error("exception in getTaskByCompletionDate:{} ", e);
 		}
