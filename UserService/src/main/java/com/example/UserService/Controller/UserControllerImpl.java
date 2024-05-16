@@ -1,7 +1,9 @@
 package com.example.UserService.Controller;
 
+
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.UserService.Entity.User;
+import com.example.UserService.Repository.UserRepository;
 import com.example.UserService.Service.UserService;
+import com.example.UserService.ServiceImpl.UserSeviceImpl;
+
 
 @RestController
 @RequestMapping("/user")
@@ -27,6 +35,10 @@ public class UserControllerImpl implements UserController {
 
 	@Autowired
 	private UserService userService;
+	
+
+	
+	
 	
 	@Value("${project.image}")
 	private String path;
@@ -133,7 +145,39 @@ public class UserControllerImpl implements UserController {
 		
 	}
 	
+	@PostMapping("/generateOtp")
+	public ResponseEntity<?> generateOtp(@RequestParam String email){
+		try {
+			userService.generateAndSendOtp(email);
+			return ResponseEntity.ok("otp generated and sent successfully");
+		}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
+	
+	
+	@PostMapping("/validateOtp")
+	public ResponseEntity<?>  validateOtp(@RequestParam String email, @RequestParam String otp){
+		try {
+		boolean isValid=userService.validateOtp(email, otp);
+		if(isValid) {
+			return ResponseEntity.ok("otp validated successfully");
+		}
+		else {
+			return ResponseEntity.badRequest().body("invalid otp");
+		}
+	}
+		catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+}
+	
+	
+	
+	}
+
 
 	
 	

@@ -1,6 +1,7 @@
 package com.task.todolist.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NamedQuery(name="Task.findByTitle",query="select t from Task t where t.title=:title")
 @Table(name = "task")
 @Getter
 @Setter
@@ -42,10 +45,10 @@ public class Task {
 
 	@Column(name = "creation_date")
 	@CreationTimestamp
-	private LocalDate creationDate;
+	private LocalDateTime creationDate;
 
 	@Column(name = "completion_date")
-	private LocalDate completionDate;
+	private LocalDateTime completionDate;
 
 	@Column(name = "priority")
 	private priorityEnum priority;
@@ -70,6 +73,8 @@ public class Task {
 	
 	@ElementCollection
 	@CollectionTable(name = "CollectionHistory", joinColumns = @JoinColumn(name = "taskId"))
-	List<LocalDate> completionDateHistory = new ArrayList<LocalDate>();
+	List<LocalDateTime> completionDateHistory = new ArrayList<LocalDateTime>();
+
+	
 
 }

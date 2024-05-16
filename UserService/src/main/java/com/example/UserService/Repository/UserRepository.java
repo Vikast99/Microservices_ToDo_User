@@ -15,4 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	public Optional<List<User>> findByCreationDateBetween(Date startDate, Date endDate);
 
+	public User findByUsername(String username);
+
+	
+	
+	
+
 }

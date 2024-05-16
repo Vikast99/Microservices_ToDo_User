@@ -3,16 +3,33 @@ package com.example.UserService.ServiceImpl;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,15 +40,29 @@ import com.example.UserService.Service.TaskClient;
 import com.example.UserService.Service.UserService;
 
 @Service
-public class UserSeviceImpl implements UserService {
+public class UserSeviceImpl implements UserService{
 	@Autowired
 	private UserRepository userRepository;
+	
+
+    
 
 	@Autowired
 	private TaskClient taskClient;
+	
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserSeviceImpl.class);
 
+	
+	
+	
+	
+	
 	@Override
 	public String createUser(User user) {
 		try {
@@ -42,7 +73,17 @@ public class UserSeviceImpl implements UserService {
 						logger.warn("User already exist");
 						return "User already exist";
 					} else {
-
+						UserSeviceImpl userServiceImp=new UserSeviceImpl(); 
+						user.setPassword(passwordEncoder.encode(user.getPassword()));
+						
+						int pLength=12;
+						if(!userServiceImp.isPasswordValid(user.getPassword(),pLength)) {
+							return "password must contain one uppercase, one lowercase and one special character or length is greater than pLength";
+						}
+						
+						
+						
+				             
 						userRepository.save(user);
 						logger.info("User saved successfully");
 						return "User saved successfully";
@@ -191,5 +232,85 @@ public class UserSeviceImpl implements UserService {
 		}
 		return name;
 	}
+	
+	
+	public boolean isPasswordValid(String password, int pLength) {
+		
+		int strength=10;
+		
+		if(password.length()>=pLength) {
+			return password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") && password.matches(".*[@#$%^&+=].*");
+			
+			
+		}
+		
+		//check if the password contains atleast one uppercase,one lowercase,one special character and number
+		return false;
+	}
+	
+	
+	public void generateAndSendOtp(String email) {
+		Optional<User> optionalUser=userRepository.findByemail(email);
+		if(!optionalUser.isPresent()) {
+			throw new RuntimeException("user not found");
+			
+		}
+		
+		User user=optionalUser.get();
+		String otp=generateOtp();
+		sendOtpByMail(email, otp);
+		
+		user.setOtp(otp);
+		userRepository.save(user);
+	}
+	
+	public boolean validateOtp(String email,String otp) {
+		Optional<User> optionalUser=userRepository.findByemail(email);
+		if(!optionalUser.isPresent()) {
+			throw new RuntimeException("user not found");
+		}
+		
+		User user=optionalUser.get();
+		String storedOtp=user.getOtp();
+		if(storedOtp==null || !storedOtp.equals(otp)) {
+			return false;    //invalid otp
+		}
+		
+		//clear the otp field in the user entity after successful validation
+		user.setOtp(null);
+		userRepository.save(user);
+		return true;
+	}
+	
+	public String generateOtp() {
+		
+		//generate a 6 digit random otp
+		
+		Random random=new Random();
+		int otp=100000 + random.nextInt(900000);
+		return String.valueOf(otp);
+	}
+	
+	public void sendOtpByMail(String email,String otp) {
+		SimpleMailMessage mailMessage=new SimpleMailMessage();
+		mailMessage.setTo(email);
+		mailMessage.setSubject("otp verification");
+		mailMessage.setText("your otp is:"+otp);
+		javaMailSender.send(mailMessage);
+	}
+
+	
+
+	
+	
+	
+
+
+	
+	
+	
+	
+	
+	
 
 }

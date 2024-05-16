@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.example.UserService.Entity.User;
 public interface UserController {
 
 
+    @PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/getUsers")
 	public List<User> getAllUsers();
 	
@@ -29,12 +31,15 @@ public interface UserController {
 	@PostMapping("/updateUser")
 	public User updateUser(@RequestParam Long id, @RequestBody User updateUser)throws Exception;
 
+	
+	
 	@GetMapping("/getUsersById")
 	public ResponseEntity<?> getUsers(@RequestParam Long id);
 
 	@GetMapping("/getUserByDate")
 	public List<User> getUsersBetweenDates(@RequestParam Date startDate, @RequestParam Date endDate);
 
+	
 	@PostMapping("/deleteUser")
 	public ResponseEntity<String> deleteUser(@RequestParam Long id);
 

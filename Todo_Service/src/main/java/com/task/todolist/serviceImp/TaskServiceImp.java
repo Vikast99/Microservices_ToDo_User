@@ -1,17 +1,26 @@
 package com.task.todolist.serviceImp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.task.todolist.entity.Task;
 import com.task.todolist.repository.TaskRepository;
 import com.task.todolist.service.TaskService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,6 +29,9 @@ public class TaskServiceImp implements TaskService {
 
 	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private EntityManager entityManager;
 	
 	@Override
 	public List<Task> getByUserId(Long userId) {
@@ -160,7 +172,7 @@ public class TaskServiceImp implements TaskService {
 	@Override
 	public List<Task> getAllRemainningTask() {
 		try {
-			LocalDate date = LocalDate.now();
+			LocalDateTime date = LocalDateTime.now();
 			List<Task> taskList = taskRepository.getAllRemainningTask(date);
 			log.info("taskList " + taskList);
 			if (!taskList.isEmpty()) {
@@ -176,7 +188,7 @@ public class TaskServiceImp implements TaskService {
 	}
 
 	@Override
-	public List<Task> getTaskByCreationDate(LocalDate creationDate) {
+	public List<Task> getTaskByCreationDate(LocalDateTime creationDate) {
 		try {
 			List<Task> task = taskRepository.findTaskByCreationDate(creationDate);
 			log.info("taskList :{}", task);
@@ -191,7 +203,7 @@ public class TaskServiceImp implements TaskService {
 	}
 
 	@Override
-	public List<Task> getTaskByCompletionDate(LocalDate completionDate) {
+	public List<Task> getTaskByCompletionDate(LocalDateTime completionDate) {
 		try {
 
 			List<Task> task = taskRepository.findTaskByCompletionDate(completionDate);
@@ -206,6 +218,70 @@ public class TaskServiceImp implements TaskService {
 		log.info("task not found");
 		return null;
 	}
+	
+	
+	
+//	@Scheduled(fixedRate = 60*1000)
+//	public void sendNotificationsForTasksLeftWithOneHour() {
+//		List<Task> tasks=taskRepository.findByCompletionDate(LocalDateTime.now().plusHours(1).withSecond(0).withNano(0));
+//		System.out.println("task list "+tasks);
+//		for(Task task:tasks) {
+////			System.out.println("for block");
+//			if(isTaskLeftWithOneHour(task)) {
+////				System.out.println("if block");
+//				System.out.println(LocalDateTime.now());
+//				sendNotification(task);
+//			}
+//		}
+//	}
+//	
+//	private void sendNotification(Task task) {
+//		
+//		System.out.println("Notification sent for the task"+task.getTitle()+" "+task.getCompletionDate());	
+//	}
+//
+//	private boolean isTaskLeftWithOneHour(Task task) {
+////		System.out.println("one hour method");
+//		LocalDateTime currentDateTime= LocalDateTime.now();
+//		LocalDateTime taskDueDateTime= task.getCompletionDate().minusHours(1).withSecond(0).withNano(0);
+//		
+//		LocalDateTime oneHourBeforeTaskDueDateAndTime=taskDueDateTime;
+//		System.out.println(" current "+currentDateTime);
+//		System.out.println("completion "+taskDueDateTime);
+//		System.out.println("oneHourBefore "+oneHourBeforeTaskDueDateAndTime);
+//		boolean b=currentDateTime.isAfter(oneHourBeforeTaskDueDateAndTime) && taskDueDateTime.withSecond(0).withNano(0).isBefore(taskDueDateTime.plusHours(1));
+//		return (b);
+//	}
+
+	
+
+	@Override
+	public Task findByTitle(String title) {
+		return taskRepository.findByTitle(title);
+		
+		
+	}
+
+	@Override
+	public List<Task> getTasksByName(String title) {
+		
+		CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
+		CriteriaQuery<Task> criteriaQuery=criteriaBuilder.createQuery(Task.class);
+		Root<Task> root=criteriaQuery.from(Task.class);
+		
+		Predicate titlePredicate=criteriaBuilder.equal(root.get("title"), title);
+		
+		return entityManager.createQuery(criteriaQuery).getResultList();
+	}
+
+//	@Override
+//	public Page<Task> findTasksByName(String title,org.springframework.data.domain.Pageable pageable) {
+//	
+//		return taskRepository.findTasksByName(title,pageable);
+//	}
+
+	
+	
 
 
 
